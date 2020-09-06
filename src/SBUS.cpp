@@ -66,8 +66,12 @@ void SBUS::disconnect()
 
 void SBUS::startReading()
 {
-	reading_ = true;
-	readThreadPtr_.reset(new std::thread(std::bind(&SBUS::readSerialPort, this)));
+	if (this->serialPort_ && this->serialPort_->isOpen())
+	{
+		reading_ = true;
+		readThreadPtr_.reset(new std::thread(std::bind(&SBUS::readSerialPort, this)));
+		readThreadPtr_->detach();
+	}
 }
 
 void SBUS::stopReading()
