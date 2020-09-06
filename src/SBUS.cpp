@@ -1,6 +1,7 @@
 #include "SBUS.h"
 #include <iostream>
 #include <serial/serial.h>
+#include <Windows.h>
 using namespace std;
 
 SBUS::SBUS():
@@ -132,12 +133,18 @@ void SBUS::readSerialPort()
 		}
 		try 
 		{
+			if (!this->serialPort_)
+			{
+				Sleep(1);
+				continue;
+			}
 			auto len = this->serialPort_->read(this->buffer_ + this->bufferFront_, SBUS_Frame_Size);
 			if (len)
 			{
 				this->bufferEnd_ += len;
 				this->incomingData();
 			}
+			Sleep(1);
 		}
 		catch (const std::exception& e)
 		{
