@@ -5,13 +5,23 @@
 #include <thread>
 #include <memory>
 
+#if !defined(SBUS_STATIC)
+#    if defined(BUILD_SBUS)
+#        define SBUS_EXPORT __declspec(dllexport)
+#    else
+#        define SBUS_EXPORT __declspec(dllimport)
+#    endif
+#else
+#    define SBUS_EXPORT
+#endif // SBUS_STATIC
+
 namespace serial
 {
 	class Serial;
 }
 
 // Save parsed SBUS data.
-struct SBUS_Value
+struct SBUS_EXPORT SBUS_Value
 {
 	uint16_t channels[16];
 	bool digital1;	// digital channel1 (ch17)
@@ -39,7 +49,7 @@ constexpr uint8_t SBUS_End_Byte4 = 0x34;
 
 typedef std::function<void(SBUS_Value)> SBUSCallback;
 
-class SBUS
+class SBUS_EXPORT SBUS
 {
 public:
 	SBUS();
